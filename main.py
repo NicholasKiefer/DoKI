@@ -8,6 +8,7 @@ default_args = {
     "hochzeit_player": None,  # int from starter player else None
     "ansagen": [-1] * 4,  # True/False for re/kontra else -1 starting from starting player
     "elo": 2,  # int in [1, 3], higher = better, but slower
+    "abfrage": False,
 }
 
 
@@ -66,14 +67,22 @@ def main(raw_args=None):
         inp["playmode"] = int(json_info["playmode"])
     except KeyError:
         inp["playmode"] = default_args["playmode"]
+    try:
+        inp["abfrage"] = bool(json_info["abfrage"])
+    except KeyError:
+        inp["abfrage"] = default_args["abfrage"]
 
     max_card = interface_player(inp["hand"], inp["game"],
                                 inp["playmode"], inp["ansagen"],
-                                inp["hochzeit_player"], inp["elo"])
+                                inp["hochzeit_player"], inp["elo"],
+                                inp["abfrage"])
 
     max_card = json.dumps({'best_card': retranslate(max_card)})
     print(max_card)
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(json.dumps({"error": e}))

@@ -5,7 +5,8 @@ import numpy as np
 
 
 def interface_player(cards: List[int], game: List[int],
-                     playmode: int, ansagen: List[int], hochzeit_player=None, strength=2):
+                     playmode: int, ansagen: List[int], hochzeit_player=None, strength=2,
+                     abfrage=False):
     """
     cards = [12, 13, ...] list of ints of cards on hand
     game = [12, 13, ...] list of int !! with trumpf > 100
@@ -13,6 +14,7 @@ def interface_player(cards: List[int], game: List[int],
     playmode: nothing else than 7 right now
     hochzeit_player: int if not None
     strength: int: [1-3] for tree search length
+    abfrage: bool, whether mcts should return ansage instead of card if possible
     get info, make rootstate with book, don't reset, start search, prints results
     """
     assert playmode == 7, "nothing else implemented"
@@ -87,6 +89,7 @@ def interface_player(cards: List[int], game: List[int],
             break
     rs.playerToMove = doko.player_to_play
     doko.hands[doko.player_to_play] = cards + [0] * (12 - len(cards))
+    # todo: if possible react to 'abfrage'
     doko.abfrage = False
     itermax = {1: 1000, 2: 7000, 3: 50000}[strength]  # game len?, 800 it/s
     move, rootnode = ismcts(rs, int(itermax))
